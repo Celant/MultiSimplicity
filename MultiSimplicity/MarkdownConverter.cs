@@ -124,9 +124,13 @@ namespace TerrariaToMultiplicity
 
                         if (!string.IsNullOrWhiteSpace(type.Notes) && type.Notes != "-" && !overrides.ForceContinue.ContainsKey(packet.PacketID))
                         {
-                            packet.Failed = true;
-                            Utils.ColorWrite(ConsoleColor.Red, "{0} [{1}] - Packet contains extra notes, cannot automatically generate", packet.PacketID.ToString(), packet.PacketName);
-                            break;
+                            Utils.ColorWrite(ConsoleColor.Red, "{0} [{1}] - Packet contains extra notes: {2}", packet.PacketID.ToString(), packet.PacketName, type.Notes);
+                            if (!Utils.ConsolePromptYesNoCancel("Do you want to force generation?"))
+                            {
+                                packet.Failed = true;
+                                Utils.ColorWrite(ConsoleColor.Red, "{0} [{1}] - Packet contains extra notes, cannot automatically generate", packet.PacketID.ToString(), packet.PacketName);
+                                break;
+                            }
                         }
 
                         if (!typeChecker.TypeSizes.ContainsKey(type.Type))

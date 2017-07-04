@@ -61,6 +61,7 @@ namespace TerrariaToMultiplicity
                     type_obj = type.Type.ToLower() == "int16" ? "short" : type_obj;
 					type_obj = type.Type.ToLower() == "uint16" ? "ushort" : type_obj;
 					type_obj = type.Type.ToLower() == "int32" ? "int" : type_obj;
+					type_obj = type.Type.ToLower() == "uint64" ? "ulong" : type_obj;
 					type_obj = type.Type.ToLower() == "boolean" ? "bool" : type_obj;
                     type_obj = type.Type.ToLower() == "color" ? "Color" : type_obj;
 		    if (!string.IsNullOrEmpty(type.Notes) && type.Notes != "-")

@@ -27,5 +27,26 @@ namespace TerrariaToMultiplicity
             Console.WriteLine(s);
             Console.ForegroundColor = originalColor;
         }
+
+        public static bool ConsolePromptYesNoCancel(string reason)
+        {
+			ConsoleKey response;
+			do
+			{
+				Console.Write(reason + " [y/n/c]");
+				response = Console.ReadKey(false).Key;   // true is intercept key (dont show), false is show
+				if (response != ConsoleKey.Enter)
+					Console.WriteLine();
+
+            } while (response != ConsoleKey.Y && response != ConsoleKey.N && response != ConsoleKey.C);
+
+            if (response == ConsoleKey.C)
+            {
+                Console.WriteLine("Cancelling generation");
+                Environment.Exit(0);
+            }
+
+			return response == ConsoleKey.Y;
+        }
     }
 }
