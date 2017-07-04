@@ -44,6 +44,14 @@ namespace TerrariaToMultiplicity
             using (StreamWriter file = new StreamWriter(filename, false))
             {
                 file.WriteLine(ClassBuilderTemplates.PACKET_HEADER);
+
+                if (packet.PacketTypes.Exists((obj) => obj.Type == "Color")) {
+                    file.WriteLine(ClassBuilderTemplates.PACKET_HEADER_COLOR);
+                }
+
+
+                file.WriteLine(ClassBuilderTemplates.PACKET_NAMESPACE);
+
                 file.WriteLine(string.Format(ClassBuilderTemplates.CLASS_START, packet.PacketName, packet.PacketID));
                 file.WriteLine();
 
@@ -51,7 +59,9 @@ namespace TerrariaToMultiplicity
                 {
                     string type_obj = type.Type.ToLower() == "single" ? "float" : type.Type.ToLower();
                     type_obj = type.Type.ToLower() == "int16" ? "short" : type_obj;
-                    type_obj = type.Type.ToLower() == "uint16" ? "ushort" : type_obj;
+					type_obj = type.Type.ToLower() == "uint16" ? "ushort" : type_obj;
+					type_obj = type.Type.ToLower() == "int32" ? "int" : type_obj;
+					type_obj = type.Type.ToLower() == "boolean" ? "bool" : type_obj;
                     type_obj = type.Type.ToLower() == "color" ? "Color" : type_obj;
 		    if (!string.IsNullOrEmpty(type.Notes) && type.Notes != "-")
                     {

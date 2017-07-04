@@ -9,9 +9,12 @@ namespace TerrariaToMultiplicity
     class ClassBuilderTemplates
     {
         public static string PACKET_HEADER = @"using System;
-using System.IO;
-using System.Drawing;
+using System.IO;";
+        
+        public static string PACKET_HEADER_COLOR = @"using System.Drawing;
+using Multiplicity.Packets.Extensions;";
 
+        public static string PACKET_NAMESPACE = @"
 namespace Multiplicity.Packets
 {";
 
