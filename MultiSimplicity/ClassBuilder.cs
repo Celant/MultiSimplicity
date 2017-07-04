@@ -49,8 +49,11 @@ namespace TerrariaToMultiplicity
 
                 foreach (PacketType type in packet.PacketTypes)
                 {
-                    string type_obj = type.Type.ToLower() != "single" ? type.Type.ToLower() : "float";
-                    if (!string.IsNullOrEmpty(type.Notes) && type.Notes != "-")
+                    string type_obj = type.Type.ToLower() == "single" ? "float" : type.Type.ToLower();
+                    type_obj = type.Type.ToLower() == "int16" ? "short" : type_obj;
+                    type_obj = type.Type.ToLower() == "uint16" ? "ushort" : type_obj;
+                    type_obj = type.Type.ToLower() == "color" ? "Color" : type_obj;
+		    if (!string.IsNullOrEmpty(type.Notes) && type.Notes != "-")
                     {
                         file.WriteLine(string.Format(ClassBuilderTemplates.PROPERTY_COMMENT, type_obj, type.Name, type.Notes));
                     }

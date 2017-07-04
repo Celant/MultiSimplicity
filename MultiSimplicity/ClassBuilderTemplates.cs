@@ -12,7 +12,7 @@ namespace TerrariaToMultiplicity
 using System.IO;
 using System.Drawing;
 
-namespace LibMultiplicity.Packets
+namespace Multiplicity.Packets
 {";
 
         public static string CLASS_START = @"    /// <summary>
@@ -29,7 +29,7 @@ namespace LibMultiplicity.Packets
         public {0} {1} {{ get; set; }}";
 
         public static string CONSTRUCTOR = @"        /// <summary>
-        /// Initializes a new instance of the <see cref=""LibMultiplicity.Packets.{0}""/> class.
+        /// Initializes a new instance of the <see cref=""{0}""/> class.
         /// </summary>
         public {0}()
             : base((byte)PacketTypes.{0})
@@ -38,7 +38,7 @@ namespace LibMultiplicity.Packets
         }}";
 
         public static string CONSTRUCTOR_READER_START = @"        /// <summary>
-        /// Initializes a new instance of the <see cref=""LibMultiplicity.Packets.{0}""/> class.
+        /// Initializes a new instance of the <see cref=""{0}""/> class.
         /// </summary>
         /// <param name=""br"">br</param>
         public {0}(BinaryReader br)
@@ -81,7 +81,7 @@ namespace LibMultiplicity.Packets
         public static string TO_STRING_START = @"        public override string ToString()
         {";
 
-        public static string TO_STRING_WRITE = @"            return string.Format(""[{0}:{1}]"", {2});";
+        public static string TO_STRING_WRITE = @"            return $""[{0}:{1}]"";";
 
         public static string TO_STRING_END = @"        }";
 
@@ -125,15 +125,14 @@ namespace LibMultiplicity.Packets
 
         public static string GetStringMethodTemplate(TerrariaPacket packet)
         {
-            string templateArgsString = string.Join(", ", packet.PacketTypes.Select(x => x.Name).ToArray());
             string templateString = "";
 
             for (int i = 0; i < packet.PacketTypes.Count; i++)
             {
-                templateString += string.Format(" {0} = {{{1}}}", packet.PacketTypes[i].Name, i);
+                templateString += string.Format(" {0} = {{{0}}}", packet.PacketTypes[i].Name, i);
             }
 
-            return string.Format(TO_STRING_WRITE, packet.PacketName, templateString, templateArgsString);
+            return string.Format(TO_STRING_WRITE, packet.PacketName, templateString);
         }
     }
 }
