@@ -9,10 +9,12 @@ namespace TerrariaToMultiplicity
     class ClassBuilderTemplates
     {
         public static string PACKET_HEADER = @"using System;
-using System.IO;";
-        
-        public static string PACKET_HEADER_COLOR = @"using System.Drawing;
+using System.IO;
 using Multiplicity.Packets.Extensions;";
+        
+        public static string PACKET_HEADER_COLOR = @"using System.Drawing;";
+        
+		public static string PACKET_HEADER_NETWORKTEXT = @"using Multiplicity.Packets.Models;";
 
         public static string PACKET_NAMESPACE = @"
 namespace Multiplicity.Packets
@@ -62,7 +64,8 @@ namespace Multiplicity.Packets
             /*
              * Length and ID headers get written in the base packet class.
              */
-            if (includeHeader) {
+            if (includeHeader)
+            {
                 base.ToStream(stream, includeHeader);
             }
 
@@ -74,7 +77,8 @@ namespace Multiplicity.Packets
              * the regressions of unconditionally closing the TCP socket
              * once the payload of data has been sent to the client.
              */
-            using (BinaryWriter br = new BinaryWriter(stream, new System.Text.UTF8Encoding(), leaveOpen: true)) {";
+            using (BinaryWriter br = new BinaryWriter(stream, new System.Text.UTF8Encoding(), leaveOpen: true))
+            {";
 
         public static string TO_STREAM_WRITE = @"                br.Write({0});";
 
@@ -93,7 +97,8 @@ namespace Multiplicity.Packets
 
         public static string GetLengthMethodTemplate(TerrariaPacket packet)
         {
-            List<string> stringProperties = new List<string>();
+			List<string> stringProperties = new List<string>();
+			List<string> networkTextProperties = new List<string>();
             int typeLength = 0;
             string lengthString = @"return (short)({0}{1});";
             TypeChecker typeChecker = new TypeChecker();
@@ -104,13 +109,17 @@ namespace Multiplicity.Packets
                 {
                     stringProperties.Add(type.Name);
                 }
+                else if (type.Type.ToLower() == "networktext")
+                {
+                    networkTextProperties.Add(type.Name);
+                }
                 else
                 {
                     typeLength += typeChecker.TypeSizes[type.Type];
                 }
             }
 
-            if (stringProperties.Count() > 0)
+            if (stringProperties.Count() > 0 || networkTextProperties.Count() > 0)
             {
                 string stringLengths = "";
                 foreach (string property in stringProperties)
@@ -118,6 +127,10 @@ namespace Multiplicity.Packets
                     stringLengths += " + " + property + ".Length";
                     typeLength += 1;
                 }
+				foreach (string property in networkTextProperties)
+				{
+                    stringLengths += " + " + property + ".GetLength()";
+				}
                 return string.Format(lengthString, typeLength, stringLengths);
             }
             else
@@ -132,7 +145,14 @@ namespace Multiplicity.Packets
 
             for (int i = 0; i < packet.PacketTypes.Count; i++)
             {
-                templateString += string.Format(" {0} = {{{0}}}", packet.PacketTypes[i].Name, i);
+                if (packet.PacketTypes[i].Type.ToLower() == "networktext")
+                {
+                    templateString += string.Format(" {0} = {{{0}.Text}}", packet.PacketTypes[i].Name);
+                }
+                else
+                {
+                    templateString += string.Format(" {0} = {{{0}}}", packet.PacketTypes[i].Name);
+                }
             }
 
             return string.Format(TO_STRING_WRITE, packet.PacketName, templateString);

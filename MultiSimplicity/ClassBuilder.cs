@@ -49,6 +49,11 @@ namespace TerrariaToMultiplicity
                     file.WriteLine(ClassBuilderTemplates.PACKET_HEADER_COLOR);
                 }
 
+				if (packet.PacketTypes.Exists((obj) => obj.Type == "NetworkText"))
+				{
+                    file.WriteLine(ClassBuilderTemplates.PACKET_HEADER_NETWORKTEXT);
+				}
+
 
                 file.WriteLine(ClassBuilderTemplates.PACKET_NAMESPACE);
 
@@ -61,10 +66,13 @@ namespace TerrariaToMultiplicity
                     type_obj = type.Type.ToLower() == "int16" ? "short" : type_obj;
 					type_obj = type.Type.ToLower() == "uint16" ? "ushort" : type_obj;
 					type_obj = type.Type.ToLower() == "int32" ? "int" : type_obj;
+					type_obj = type.Type.ToLower() == "uint32" ? "uint" : type_obj;
+					type_obj = type.Type.ToLower() == "int64" ? "long" : type_obj;
 					type_obj = type.Type.ToLower() == "uint64" ? "ulong" : type_obj;
 					type_obj = type.Type.ToLower() == "boolean" ? "bool" : type_obj;
-                    type_obj = type.Type.ToLower() == "color" ? "Color" : type_obj;
-		    if (!string.IsNullOrEmpty(type.Notes) && type.Notes != "-")
+					type_obj = type.Type.ToLower() == "color" ? "Color" : type_obj;
+					type_obj = type.Type.ToLower() == "networktext" ? "NetworkText" : type_obj;
+		            if (!string.IsNullOrEmpty(type.Notes) && type.Notes != "-")
                     {
                         file.WriteLine(string.Format(ClassBuilderTemplates.PROPERTY_COMMENT, type_obj, type.Name, type.Notes));
                     }
